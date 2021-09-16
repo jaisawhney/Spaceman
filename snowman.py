@@ -1,20 +1,14 @@
 import random
-
+import re
+import sys
+import os
 
 def load_word():
-    '''
-    A function that reads a text file of words and randomly selects one to use as the secret word
-        from the list.
-
-    Returns:
-           string: The secret word to be used in the spaceman guessing game
-    '''
     f = open('words.txt', 'r')
     words_list = f.readlines()
     f.close()
 
-    words_list = words_list[0].split(
-        ' ')  # comment this line out if you use a words.txt file with each word on a new line
+    words_list = words_list[0].split(" ")
     secret_word = random.choice(words_list)
     return secret_word
 
@@ -69,25 +63,38 @@ def is_guess_in_word(guess, secret_word):
 
 
 def spaceman(secret_word):
-    '''
-    A function that controls the game of spaceman. Will start spaceman in the command line.
+    letters_guessed = []
+    word_guessed = False
 
-    Args:
-      secret_word (string): the secret word to guess.
+    blank_word = re.sub(r".", "_", secret_word)
+    print(f"The word is: {blank_word}")
 
-    '''
+    while not word_guessed:
+        guess = input("Guess a letter!\n")
+        os.system("clear")
 
-    # TODO: show the player information about the game according to the project spec
+        if len(guess) > 1:
+            print("Please only guess one letter at a time!")
+            continue
+        letters_guessed.append(guess)
 
-    # TODO: Ask the player to guess one letter per round and check that it is only one letter
+        guess_in_word = is_guess_in_word(guess, secret_word)
+        if guess_in_word:
+            print(f"Your guess of \"{guess}\" is in the word!")
+        else:
+            print(f"Your guess of \"{guess}\" was not in the word!")
 
-    # TODO: Check if the guessed letter is in the secret or not and give the player feedback
+        if is_word_guessed(secret_word, letters_guessed):
+            print(f"You won! The word was \"{secret_word}\"")
+            break
+        else:
+            word_so_far = get_guessed_word(secret_word, letters_guessed)
+            print(f"The word so far is: {word_so_far or blank_word}\n")
 
-    # TODO: show the guessed word so far
 
-    # TODO: check if the game has been won or lost
-
-
-# These function calls that will start the game
-secret_word = load_word()
-spaceman(secret_word)
+if __name__ == "__main__":
+    try:
+        secret_word = load_word()
+        spaceman(secret_word)
+    except KeyboardInterrupt:
+        sys.exit()
