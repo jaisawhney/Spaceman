@@ -37,8 +37,12 @@ def is_guess_in_word(guess, secret_word):
     return guess in secret_word
 
 
-def spaceman(secret_word):
+def main():
+    secret_word = load_word()
     letters_guessed = []
+
+    max_incorrect = len(secret_word)
+    incorrect_guesses = 0
 
     blank_word = re.sub(r".", "_", secret_word)
     print(f"The word is: {blank_word}")
@@ -50,16 +54,21 @@ def spaceman(secret_word):
         if len(guess) > 1:
             print("Please only guess one letter at a time!")
             continue
+
         letters_guessed.append(guess)
 
-        guess_in_word = is_guess_in_word(guess, secret_word)
-        if guess_in_word:
+        if is_guess_in_word(guess, secret_word):
             print(f"Your guess of \"{guess}\" is in the word!")
         else:
-            print(f"Your guess of \"{guess}\" was not in the word!")
+            incorrect_guesses += 1
+            print(f"Your guess of \"{guess}\" was not in the word!\n"
+                  f"You have {max_incorrect - incorrect_guesses} guesses left")
 
         if is_word_guessed(secret_word, letters_guessed):
             print(f"You won! The word was \"{secret_word}\"")
+            break
+        elif incorrect_guesses >= max_incorrect:
+            print(f"Oh no! You ran out of guesses. The word was \"{secret_word}\"")
             break
         else:
             word_so_far = get_guessed_word(secret_word, letters_guessed)
@@ -68,7 +77,6 @@ def spaceman(secret_word):
 
 if __name__ == "__main__":
     try:
-        secret_word = load_word()
-        spaceman(secret_word)
+        main()
     except KeyboardInterrupt:
         sys.exit()
