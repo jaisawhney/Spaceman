@@ -4,6 +4,7 @@ import sys
 import os
 
 
+# Load the words from the file
 def load_word():
     f = open('words.txt', 'r')
     words_list = f.readlines()
@@ -14,6 +15,7 @@ def load_word():
     return secret_word
 
 
+# Check if a word has been fully guessed
 def is_word_guessed(secret_word, letters_guessed):
     for letter in secret_word:
         if letter not in letters_guessed:
@@ -21,6 +23,7 @@ def is_word_guessed(secret_word, letters_guessed):
     return True
 
 
+# Get the guessed word so far
 def get_guessed_word(secret_word, letters_guessed):
     secret_word_letters = [letter for letter in secret_word]
 
@@ -33,10 +36,12 @@ def get_guessed_word(secret_word, letters_guessed):
     return word_so_far
 
 
+# Check if a guess is in the word
 def is_guess_in_word(guess, secret_word):
     return guess in secret_word
 
 
+# Main
 def main():
     secret_word = load_word()
     letters_guessed = []
@@ -47,6 +52,7 @@ def main():
     blank_word = re.sub(r".", "_", secret_word)
     print(f"The word is: {blank_word}")
 
+    # Game loop
     while True:
         guess = input("Guess a letter!\n")
         os.system("clear")
@@ -73,6 +79,12 @@ def main():
         else:
             word_so_far = get_guessed_word(secret_word, letters_guessed)
             print(f"The word so far is: {word_so_far or blank_word}\n")
+
+    # Ask the player if they want to play again.
+    os.system("clear")
+    wants_new_game = input("Want to play again? ")
+    if wants_new_game.lower() == "yes":
+        main()
 
 
 if __name__ == "__main__":
