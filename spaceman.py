@@ -62,6 +62,10 @@ def main():
                 print("Please only guess one letter at a time!")
                 continue
 
+            if guess in letters_guessed:
+                print(f"You have already guessed \"{guess}\"!")
+                continue
+
             letters_guessed.append(guess)
 
             if is_guess_in_word(guess, secret_word):
