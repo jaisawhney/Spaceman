@@ -43,48 +43,54 @@ def is_guess_in_word(guess, secret_word):
 
 # Main
 def main():
-    secret_word = load_word()
-    letters_guessed = []
+    try:
+        secret_word = load_word()
+        letters_guessed = []
 
-    max_incorrect = len(secret_word)
-    incorrect_guesses = 0
+        max_incorrect = len(secret_word)
+        incorrect_guesses = 0
 
-    blank_word = re.sub(r".", "_", secret_word)
-    print(f"The word is: {blank_word}")
+        blank_word = re.sub(r".", "_", secret_word)
+        print(f"The word is: {blank_word}")
 
-    # Game loop
-    while True:
-        guess = input("Guess a letter!\n")
-        os.system("clear")
+        # Game loop
+        while True:
+            guess = input("Guess a letter!\n")
+            os.system("clear")
 
-        if len(guess) > 1:
-            print("Please only guess one letter at a time!")
-            continue
+            if len(guess) > 1:
+                print("Please only guess one letter at a time!")
+                continue
 
-        letters_guessed.append(guess)
+            letters_guessed.append(guess)
 
-        if is_guess_in_word(guess, secret_word):
-            print(f"Your guess of \"{guess}\" is in the word!")
-        else:
-            incorrect_guesses += 1
-            print(f"Your guess of \"{guess}\" was not in the word!\n"
-                  f"You have {max_incorrect - incorrect_guesses} guesses left")
+            if is_guess_in_word(guess, secret_word):
+                print(f"Your guess of \"{guess}\" is in the word!")
+            else:
+                incorrect_guesses += 1
+                print(f"Your guess of \"{guess}\" was not in the word!\n"
+                      f"You have {max_incorrect - incorrect_guesses} guesses left")
 
-        if is_word_guessed(secret_word, letters_guessed):
-            print(f"You won! The word was \"{secret_word}\"")
-            break
-        elif incorrect_guesses >= max_incorrect:
-            print(f"Oh no! You ran out of guesses. The word was \"{secret_word}\"")
-            break
-        else:
-            word_so_far = get_guessed_word(secret_word, letters_guessed)
-            print(f"The word so far is: {word_so_far or blank_word}\n")
+            if is_word_guessed(secret_word, letters_guessed):
+                print(f"You won! The word was \"{secret_word}\"")
+                break
+            elif incorrect_guesses >= max_incorrect:
+                print(f"Oh no! You ran out of guesses. The word was \"{secret_word}\"")
+                break
+            else:
+                word_so_far = get_guessed_word(secret_word, letters_guessed)
+                print(f"The word so far is: {word_so_far or blank_word}\n")
 
-    # Ask the player if they want to play again.
-    os.system("clear")
-    wants_new_game = input("Want to play again? ")
-    if wants_new_game.lower() == "yes":
-        main()
+        # Ask the player if they want to play again.
+        wants_new_game = input("\nWant to play again? ")
+        if wants_new_game.lower() == "yes":
+            os.system("clear")
+            main()
+
+    except FileNotFoundError:
+        print("Could not find the words.txt file!")
+    except IndexError:
+        print("No words found in words.txt!")
 
 
 if __name__ == "__main__":
