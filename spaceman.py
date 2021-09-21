@@ -58,16 +58,24 @@ def main():
             guess = input("Guess a letter!\n")
             os.system("clear")
 
+            # Check for invalid guesses
+            if len(guess) == 0 or guess.isnumeric():
+                print("Invalid guess!")
+                continue
+
+            # Check if the user guessed multiple letters
             if len(guess) > 1:
                 print("Please only guess one letter at a time!")
                 continue
 
+            # Check if the user already guessed that letter
             if guess in letters_guessed:
                 print(f"You have already guessed \"{guess}\"!")
                 continue
 
             letters_guessed.append(guess)
 
+            # Check if guess is in the word
             if is_guess_in_word(guess, secret_word):
                 print(f"Your guess of \"{guess}\" is in the word!")
             else:
@@ -75,6 +83,7 @@ def main():
                 print(f"Your guess of \"{guess}\" was not in the word!\n"
                       f"You have {max_incorrect - incorrect_guesses} guesses left")
 
+            # Check if the word is guessed
             if is_word_guessed(secret_word, letters_guessed):
                 print(f"You won! The word was \"{secret_word}\"")
                 break
