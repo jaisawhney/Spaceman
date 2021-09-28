@@ -6,11 +6,9 @@ import os
 
 # Load the words from the file
 def load_word():
-    f = open('words.txt', 'r')
-    words_list = f.readlines()
-    f.close()
-
-    words_list = words_list[0].split(" ")
+    with open("words.txt", "r") as file:
+        words_list = file.readlines()
+        words_list = words_list[0].split(" ")
     secret_word = random.choice(words_list)
     return secret_word
 
@@ -25,7 +23,7 @@ def is_word_guessed(secret_word, letters_guessed):
 
 # Get the guessed word so far
 def get_guessed_word(secret_word, letters_guessed):
-    secret_word_letters = [letter for letter in secret_word]
+    secret_word_letters = list(secret_word)
 
     word_so_far = ""
     for letter in secret_word_letters:
@@ -39,6 +37,25 @@ def get_guessed_word(secret_word, letters_guessed):
 # Check if a guess is in the word
 def is_guess_in_word(guess, secret_word):
     return guess in secret_word
+
+
+def is_valid_guess(guess):
+    # Check for invalid guesses
+    if len(guess) == 0 or guess.isnumeric():
+        print("Invalid guess!")
+        return False
+
+    # Check if the user guessed multiple letters
+    if len(guess) > 1:
+        print("Please only guess one letter at a time!")
+        return False
+
+    # Make sure the guess is a letter
+    if guess.lower() not in ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r",
+                             "s", "t", "u", "v", "w", "x", "y", "z"]:
+        print("You may only guess letters!")
+        return False
+    return True
 
 
 # Main
@@ -58,19 +75,17 @@ def main():
             guess = input("Guess a letter!\n")
             os.system("clear")
 
-            # Check for invalid guesses
-            if len(guess) == 0 or guess.isnumeric():
-                print("Invalid guess!")
-                continue
-
-            # Check if the user guessed multiple letters
-            if len(guess) > 1:
-                print("Please only guess one letter at a time!")
+            # Check if the guess is valid
+            if not is_valid_guess(guess):
                 continue
 
             # Check if the user already guessed that letter
             if guess in letters_guessed:
+                word_so_far = get_guessed_word(secret_word, letters_guessed) or blank_word
+
                 print(f"You have already guessed \"{guess}\"!")
+                print(f"You have guessed the following letters: {', '.join(letters_guessed)}")
+                print(f"The word so far is: {word_so_far}\n")
                 continue
 
             letters_guessed.append(guess)
@@ -87,12 +102,14 @@ def main():
             if is_word_guessed(secret_word, letters_guessed):
                 print(f"You won! The word was \"{secret_word}\"")
                 break
-            elif incorrect_guesses >= max_incorrect:
+
+            # Check how many guesses they have left
+            if incorrect_guesses >= max_incorrect:
                 print(f"Oh no! You ran out of guesses. The word was \"{secret_word}\"")
                 break
-            else:
-                word_so_far = get_guessed_word(secret_word, letters_guessed)
-                print(f"The word so far is: {word_so_far or blank_word}\n")
+
+            word_so_far = get_guessed_word(secret_word, letters_guessed) or blank_word
+            print(f"The word so far is: {word_so_far}\n")
 
         # Ask the player if they want to play again.
         wants_new_game = input("\nWant to play again? ")
